@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.Treat_wqDao">
+	
+	<select id="findTreatAll" resultMap="treat">
+		select t.*,d.Yname_wq,k.Kname_wq,u.Uname_wq  from treat_wq as t left join dock_wq as d on d.Yid_wq = t.TDid_wq left join keshi_wq as k on k.Kid_wq = t.TKeshiId_wq left join user_wq as u on t.TUid_wq = u.Uid_wq where t.TisUse_wq =1
+	</select>
+	
+	<select id="findTreatByTreatId" parameterType="Integer" resultMap="treat">
+		select t.*,d.Yname_wq,k.Kname_wq,u.Uname_wq  from treat_wq as t left join dock_wq as d on d.Yid_wq = t.TDid_wq left join keshi_wq as k on k.Kid_wq = t.TKeshiId_wq left join user_wq as u on t.TUid_wq = u.Uid_wq where t.TisUse_wq =1 and t.Tid_wq=#{0}
+	</select>
+	
+	<select id="findTreatOneByDockId" parameterType="Integer" resultMap="treat">
+		select t.*,d.Yname_wq,k.Kname_wq,u.Uname_wq  from treat_wq as t left join dock_wq as d on d.Yid_wq = t.TDid_wq left join keshi_wq as k on k.Kid_wq = t.TKeshiId_wq left join user_wq as u on t.TUid_wq = u.Uid_wq where t.TisUse_wq =1 and t.TDid_wq=#{0}
+	</select>
+	
+	<select id="findTreatAllOneByDockId" parameterType="Integer" resultMap="treat">
+		select t.*,d.Yname_wq,k.Kname_wq,u.Uname_wq  from treat_wq as t left join dock_wq as d on d.Yid_wq = t.TDid_wq left join keshi_wq as k on k.Kid_wq = t.TKeshiId_wq left join user_wq as u on t.TUid_wq = u.Uid_wq where t.TisUse_wq =1 and t.TDid_wq=#{0}
+	</select>
+	
+	<select id="findTreatAllOneByDockShen" parameterType="String" resultMap="treat">
+		select t.*,d.Yname_wq,k.Kname_wq,u.Uname_wq  from treat_wq as t left join dock_wq as d on d.Yid_wq = t.TDid_wq left join keshi_wq as k on k.Kid_wq = t.TKeshiId_wq left join user_wq as u on t.TUid_wq = u.Uid_wq where t.TisUse_wq =1 and t.Tshenfenzheng_wq=#{Tshenfenzheng_wq,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 用户根据id来查询预约信息 -->
+	<select id="GetAllPreTreatByUserIdByUser" parameterType="Integer" resultMap="treat">
+		select t.*,d.Yname_wq,k.Kname_wq,u.Uname_wq  from treat_wq as t left join dock_wq as d on d.Yid_wq = t.TDid_wq left join keshi_wq as k on k.Kid_wq = t.TKeshiId_wq left join user_wq as u on t.TUid_wq = u.Uid_wq where t.TisUse_wq =1 and t.Tstatus_wq = 0 and t.TUid_wq=#{0}
+	</select>
+	
+	<!-- 用户根据id来查询已完成诊断信息 -->
+	<select id="GetAllYijiuzhenTreatByUserIdByUser" parameterType="Integer" resultMap="treat">
+		select t.*,d.Yname_wq,k.Kname_wq,u.Uname_wq  from treat_wq as t left join dock_wq as d on d.Yid_wq = t.TDid_wq left join keshi_wq as k on k.Kid_wq = t.TKeshiId_wq left join user_wq as u on t.TUid_wq = u.Uid_wq where t.TisUse_wq =1 and t.Tstatus_wq = 1 and t.TUid_wq=#{0}
+	</select>
+	
+	<select id="GetTtreatByUidAndDockId" parameterType="entity.Treat_wqBean" resultMap="treat">
+		select * from treat_wq  where TisUse_wq =1 and TDid_wq=#{0} and TUid_wq=#{0}
+	</select>
+  
+ 	<!-- 根据医生Id查出未就诊预约总人数 -->
+ 	<select id="findTreatTotalPreIndexByStaus" parameterType="Integer" resultMap="treat">
+		select count(*) as preCont from treat_wq where Tstatus_wq = 0 and TisUse_wq =1 and TDid_wq=#{0}
+	</select>
+	
+	<!-- 根据医生Id查出就医总人数（已就诊+未就诊） -->
+ 	<select id="findTreatTotalByStaus" parameterType="Integer" resultMap="treat">
+		select count(*) as totalCont from treat_wq where TisUse_wq =1 and TDid_wq=#{0}
+	</select>
+	
+	<!-- 根据医生Id查出所有就诊排名中最大数 -->
+ 	<select id="findTreatTotalMaxByStaus" parameterType="Integer" resultMap="treat">
+		select max(Ttotal_wq) as totalMax from treat_wq where TisUse_wq =1 and TDid_wq=#{0}
+	</select>
+	
+	<!-- 根据医生Id查出预约排名中最大数 -->
+ 	<select id="findTreatPreIndexMaxByStaus" parameterType="Integer" resultMap="treat">
+		select max(TpreIndex_wq) as preIndexMax from treat_wq where Tstatus_wq = 0 and TisUse_wq =1 and TDid_wq=#{0}
+	</select>
+	
+	<!-- 知道当前完成就诊id，将排在后面的预约人数依次减1 -->
+	<select id="findTreatPreIndexJianyiByStaus" parameterType="entity.Treat_wqBean" resultMap="treat">
+		select * from treat_wq where Tid_wq &gt; (select Tid_wq from treat_wq  where Tid_wq = #{Tid_wq,jdbcType=INTEGER}) and Tstatus_wq = 0 and TisUse_wq =1 and TDid_wq= #{TDid_wq,jdbcType=INTEGER }
+	</select>
+	
+	<!-- 完成就诊必须按照预约人数来，完成一个后，才能进行下一个 -->
+	<select id="findTreatPreIndexYanzhengByStaus" parameterType="entity.Treat_wqBean" resultMap="treat">
+		select * from treat_wq where Tid_wq &lt; (select Tid_wq from treat_wq  where Tid_wq = #{Tid_wq,jdbcType=INTEGER}) and Tstatus_wq = 0 and TisUse_wq =1 and TDid_wq= #{TDid_wq,jdbcType=INTEGER }
+	</select>
+  
+  	<select id="findTreatById" parameterType="Integer" resultMap="treat">
+		select * from treat_wq where Tid_wq=#{0} and TisUse_wq =1
+	</select>
+	
+	<select id="findTreatByDid" parameterType="Integer" resultMap="treat">
+		select * from treat_wq where TDid_wq=#{0}  and TisUse_wq =1
+	</select>
+	
+	<select id="findDockYijiuzhenTreatAll" parameterType="Integer" resultMap="treat">
+		select t.*,d.Yname_wq,k.Kname_wq,u.Uname_wq  from treat_wq as t left join dock_wq as d on d.Yid_wq = t.TDid_wq left join keshi_wq as k on k.Kid_wq = t.TKeshiId_wq left join user_wq as u on t.TUid_wq = u.Uid_wq where t.Tstatus_wq=1 and t.TisUse_wq =1 and t.TDid_wq=#{0}
+	</select>
+	
+	<select id="findDockWeijiuzhenTreatAll" parameterType="Integer" resultMap="treat">
+		select t.*,d.Yname_wq,k.Kname_wq,u.Uname_wq  from treat_wq as t left join dock_wq as d on d.Yid_wq = t.TDid_wq left join keshi_wq as k on k.Kid_wq = t.TKeshiId_wq left join user_wq as u on t.TUid_wq = u.Uid_wq where t.Tstatus_wq=0 and t.TisUse_wq =1 and t.TDid_wq=#{0}
+	</select>
+	
+	<select id="findYijiuzhenTreatAll" resultMap="treat">
+		select t.*,d.Yname_wq,k.Kname_wq,u.Uname_wq  from treat_wq as t left join dock_wq as d on d.Yid_wq = t.TDid_wq left join keshi_wq as k on k.Kid_wq = t.TKeshiId_wq left join user_wq as u on t.TUid_wq = u.Uid_wq where t.Tstatus_wq=1 and t.TisUse_wq =1
+	</select>
+	
+	<select id="findWeijiuzhenTreatAll" resultMap="treat">
+		select t.*,d.Yname_wq,k.Kname_wq,u.Uname_wq  from treat_wq as t left join dock_wq as d on d.Yid_wq = t.TDid_wq left join keshi_wq as k on k.Kid_wq = t.TKeshiId_wq left join user_wq as u on t.TUid_wq = u.Uid_wq where t.Tstatus_wq=0 and t.TisUse_wq =1
+	</select>
+	
+	<update id="updateDelTreatInfo" parameterType="entity.Treat_wqBean">
+    update treat_wq
+    set TisUse_wq = #{TisUse_wq,jdbcType=INTEGER}
+    where Tid_wq = #{Tid_wq,jdbcType=INTEGER }
+  </update>
+	
+	<update id="updatePreAndTotalTreatInfo" parameterType="entity.Treat_wqBean">
+    update treat_wq
+    set 
+     TpreIndex_wq = #{TpreIndex_wq,jdbcType=INTEGER},
+      Ttotal_wq = #{Ttotal_wq,jdbcType=INTEGER}
+    where Tid_wq = #{Tid_wq,jdbcType=INTEGER }
+  </update>
+  
+  <update id="updateWanchengTreatInfo" parameterType="entity.Treat_wqBean">
+    update treat_wq
+    set Tstatus_wq = #{Tstatus_wq,jdbcType=VARCHAR},
+	    TstatusStr_wq = #{TstatusStr_wq,jdbcType=VARCHAR}
+	    where Tid_wq = #{Tid_wq,jdbcType=INTEGER }
+  </update>
+  
+  <update id="updateTreatInfo" parameterType="entity.Treat_wqBean">
+    update treat_wq
+    set Ttitle_wq = #{Ttitle_wq,jdbcType=VARCHAR},
+    TUid_wq = #{TUid_wq,jdbcType=INTEGER},
+     TDid_wq = #{TDid_wq,jdbcType=INTEGER},
+     TKeshiId_wq = #{TKeshiId_wq,jdbcType=INTEGER},
+      Ttreattime_wq = #{Ttreattime_wq,jdbcType=TIMESTAMP},
+      TpreTime_wq = #{TpreTime_wq,jdbcType=TIMESTAMP},
+      TpreIndex_wq = #{TpreIndex_wq,jdbcType=INTEGER},
+      Ttotal_wq = #{Ttotal_wq,jdbcType=INTEGER},
+      Tbianhao_wq = #{Tbianhao_wq,jdbcType=VARCHAR}
+    where Tid_wq = #{Tid_wq,jdbcType=INTEGER }
+  </update>
+  
+
+  <insert id="insertTreatInfo" parameterType="entity.Treat_wqBean">
+    insert into treat_wq (
+    	Ttitle_wq, 
+    	TUid_wq,
+    	TDid_wq,
+    	TKeshiId_wq,
+    	Ttreattime_wq,
+    	TpreIndex_wq,
+    	Ttotal_wq,
+    	TpreTime_wq,
+    	Tbianhao_wq,
+    	Tshenfenzheng_wq,
+    	Tstatus_wq,
+    	TstatusStr_wq,
+    	TisUse_wq
+    	)
+    values (
+    	#{Ttitle_wq,jdbcType=VARCHAR}, 
+    	#{TUid_wq,jdbcType=INTEGER}, 
+    	#{TDid_wq,jdbcType=INTEGER}, 
+    	#{TKeshiId_wq,jdbcType=INTEGER}, 
+    	#{Ttreattime_wq,jdbcType=TIMESTAMP},
+    	#{TpreIndex_wq,jdbcType=INTEGER}, 
+    	#{Ttotal_wq,jdbcType=INTEGER}, 
+    	#{TpreTime_wq,jdbcType=TIMESTAMP},
+    	#{Tbianhao_wq,jdbcType=VARCHAR},
+    	#{Tshenfenzheng_wq,jdbcType=VARCHAR},
+    	#{Tstatus_wq,jdbcType=INTEGER},
+    	#{TstatusStr_wq,jdbcType=VARCHAR},
+    	#{TisUse_wq,jdbcType=INTEGER}
+    	)
+  </insert>
+
+	<resultMap type="entity.Treat_wqBean" id="treat">
+		<result column="Tid_wq" jdbcType="INTEGER" property="Tid_wq" />
+   	 	<result column="Ttitle_wq" jdbcType="VARCHAR" property="Ttitle_wq" />
+    	<result column="TUid_wq" jdbcType="INTEGER" property="TUid_wq" />
+    	<result column="TDid_wq" jdbcType="INTEGER" property="TDid_wq" />
+    	<result column="TKeshiId_wq" jdbcType="INTEGER" property="TKeshiId_wq" />
+    	<result column="Ttreattime_wq" jdbcType="TIMESTAMP" property="Ttreattime_wq" />
+    	<result column="TpreIndex_wq" jdbcType="INTEGER" property="TpreIndex_wq" />
+    	<result column="Ttotal_wq" jdbcType="INTEGER" property="Ttotal_wq" />
+    	<result column="TpreTime_wq" jdbcType="TIMESTAMP" property="TpreTime_wq" />
+    	<result column="Tbianhao_wq" jdbcType="VARCHAR" property="Tbianhao_wq" />
+    	<result column="Tshenfenzheng_wq" jdbcType="VARCHAR" property="Tshenfenzheng_wq" />
+    	<result column="Tstatus_wq" jdbcType="INTEGER" property="Tstatus_wq" />
+    	<result column="TstatusStr_wq" jdbcType="VARCHAR" property="TstatusStr_wq" />
+    	<result column="TisUse_wq" jdbcType="INTEGER" property="TisUse_wq" />
+    	
+    	<result column="preCont" jdbcType="INTEGER" property="preCont" />  
+    	<result column="totalCont" jdbcType="INTEGER" property="totalCont" />  
+    	<result column="totalMax" jdbcType="INTEGER" property="totalMax" />
+    	<result column="preIndexMax" jdbcType="INTEGER" property="preIndexMax" />
+    	
+    	<result column="Uname_wq" jdbcType="VARCHAR" property="Tuanme" />
+    	<result column="Yname_wq" jdbcType="VARCHAR" property="Tdanme" />
+    	<result column="Kname_wq" jdbcType="VARCHAR" property="Tkname" />
+    	
+	</resultMap>
+</mapper>

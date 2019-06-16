@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.Keshi_wqDao">
+	
+	<select id="findKeshiAll" resultMap="keshi">
+		select * from keshi_wq
+	</select>
+  
+  	<select id="findKeshiById" parameterType="Integer" resultMap="keshi">
+		select * from keshi_wq where Kid_wq=#{0} 
+	</select>
+	
+	<select id="findKeshiInfoByName" parameterType="String" resultMap="keshi">
+		select * from keshi_wq where Kname_wq like #{Kname_wq,jdbcType=VARCHAR}
+	</select>
+	
+	 <delete id="deleteKeshiById" parameterType="Integer">
+    	delete from keshi_wq where Kid_wq = #{0}
+  	</delete>
+  	
+  	<update id="updateKeshiInfo" parameterType="entity.Keshi_wqBean">
+    update keshi_wq
+   		 set Kname_wq = #{Kname_wq,jdbcType=VARCHAR},
+   		  Kfuzeren_wq = #{Kfuzeren_wq,jdbcType=VARCHAR},
+   		    Ktel_wq = #{Ktel_wq,jdbcType=VARCHAR},
+   		  Kjianjie_wq = #{Kjianjie_wq,jdbcType=VARCHAR},
+     	  Ktime_wq = #{Ktime_wq,jdbcType=TIMESTAMP}
+    where Kid_wq = #{Kid_wq,jdbcType=INTEGER }
+  </update>
+  
+  	
+  	<insert id="insertKeshiInfo" parameterType="entity.Keshi_wqBean">
+    insert into keshi_wq (
+    	Kname_wq,
+    	Kfuzeren_wq,
+    	Ktel_wq,
+    	Ktime_wq,
+    	Kjianjie_wq
+    	 )
+    values (
+    	#{Kname_wq,jdbcType=VARCHAR}, 
+    	#{Kfuzeren_wq,jdbcType=VARCHAR},
+     	 #{Ktel_wq,jdbcType=VARCHAR},
+        #{Ktime_wq,jdbcType=TIMESTAMP},
+        #{Kjianjie_wq,jdbcType=VARCHAR}
+         )
+  </insert>
+
+	<resultMap type="entity.Keshi_wqBean" id="keshi">
+		<result column="Kid_wq" jdbcType="INTEGER" property="Kid_wq" />
+   	 	<result column="Kname_wq" jdbcType="VARCHAR" property="Kname_wq" />
+    	<result column="Kfuzeren_wq" jdbcType="VARCHAR" property="Kfuzeren_wq" />
+    	<result column="Ktel_wq" jdbcType="VARCHAR" property="Ktel_wq" />
+    	<result column="Ktime_wq" jdbcType="TIMESTAMP" property="Ktime_wq" />
+    	<result column="Kjianjie_wq" jdbcType="VARCHAR" property="Kjianjie_wq" />
+	</resultMap>
+	
+</mapper>

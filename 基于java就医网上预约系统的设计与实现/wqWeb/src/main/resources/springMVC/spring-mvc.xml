@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd"
+        default-autowire="byName">
+	<!-- 静态文件 -->
+	
+    <mvc:resources mapping="/css/**" location="/WEB-INF/css/" cache-period="31556926" />
+    <mvc:resources mapping="/js/**" location="/WEB-INF/js/" cache-period="31556926" />
+	<mvc:resources mapping="/img/**" location="/WEB-INF/img/" cache-period="31556926" />
+    <mvc:resources mapping="/images/**" location="/WEB-INF/images/" cache-period="31556926" />
+	<!-- 注解启用，扫描contoller包 -->
+	<mvc:annotation-driven />
+	<context:component-scan base-package="dao" />
+    <context:component-scan base-package="controller" />
+	<context:component-scan base-package="service" />
+
+    <!-- 配置ViewResolver。 可以用多个ViewResolver。 使用order属性排序。 InternalResourceViewResolver放在最后。 -->
+	 <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+        
+<!-- 
+     <mvc:interceptors>
+  
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+           	<mvc:exclude-mapping path="/login"/>
+           	<mvc:exclude-mapping path="/css/*"/>
+            <mvc:exclude-mapping path="/img/*"/>
+           	<mvc:exclude-mapping path="/js/*"/>
+            <bean class="entity.LoginCheckInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+   -->    
+    <bean id="annotationMethodHandlerAdapter"
+          class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>  
+      <bean id="stringConverter"
+          class="org.springframework.http.converter.StringHttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>text/plain;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+    
+    
+    <!-- 是图层的显示 -->
+     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+         <property name="prefix" value="/WEB-INF/jsp/" />
+         <property name="suffix" value=".jsp" />
+     </bean>
+     	<!-- SpringMVC上传文件时，需要配置MultipartResolver处理器 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <!-- 指定所上传文件的总大小不能超过200KB。注意maxUploadSize属性的限制不是针对单个文件，而是所有文件的容量之和 -->
+        <property name="maxUploadSize" value="20000000"/>
+    </bean>
+     	
+</beans>
